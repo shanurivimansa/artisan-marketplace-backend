@@ -146,6 +146,16 @@ app.post('/api/users/login', (req, res) => {
   res.json({ message: 'Login successful', user: rows[0] });
 });
 
+// ── PASSWORD RESET ──────────────────────────────────────────
+app.post('/api/users/reset-password', (req, res) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) return res.status(400).json({ error: 'Email and new password required' });
+  const user = global.query('SELECT id FROM users WHERE email = ?', [email]);
+  if (!user.length) return res.status(404).json({ error: 'No account found with that email' });
+  global.run('UPDATE users SET password = ? WHERE email = ?', [newPassword, email]);
+  res.json({ message: 'Password reset successfully' });
+});
+
 // ── PRODUCT ROUTES ───────────────────────────────────────────
 app.get('/api/products', (req, res) => {
   const { search } = req.query;

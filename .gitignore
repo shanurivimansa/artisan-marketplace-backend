@@ -1,0 +1,3 @@
+node_modules/
+marketplace.db
+.env
